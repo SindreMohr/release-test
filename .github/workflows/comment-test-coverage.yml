@@ -30,19 +30,18 @@ jobs:
         with:
           name: jest-results
           path: jest-results.json
-          
+
       - name: Comment on PR with test results
-        if: always() && github.event_name == 'pull_request'
+        if: always()
         uses: actions/github-script@v5
         with:
           script: |
             const fs = require('fs');
             const testResults = fs.readFileSync('${{ github.workspace }}/jest-results.json', 'utf8');
-            const pullRequestNumber = github.event.pull_request.number;
             const commentBody = `## Jest Test Results\n\`\`\`\n${testResults}\n\`\`\``;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: pullRequestNumber,
+              issue_number: context.issue.number,
               body: commentBody
             });
