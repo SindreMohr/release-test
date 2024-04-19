@@ -3,6 +3,8 @@ name: PR Description to Markdown
 on:
   pull_request:
     types: [closed]
+    branches:
+      - release/*
 
 permissions:
   contents: write
@@ -18,9 +20,10 @@ jobs:
     
     - name: Append PR description to markdown file
       run: |
-        echo -e "## PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}\n\n${{ github.event.pull_request.body }}\n" >> PR_DESCRIPTIONS.md
+        echo -e "## PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}\n\n${{ github.event.pull_request.body }}\n" >> changelog.md
         git config --global user.email "action@github.com"
         git config --global user.name "GitHub Action"
+        git checkout -b chore/update-documentation
         git add PR_DESCRIPTIONS.md
         git commit -m "Update PR_DESCRIPTIONS.md for PR #${{ github.event.pull_request.number }}"
         git push
