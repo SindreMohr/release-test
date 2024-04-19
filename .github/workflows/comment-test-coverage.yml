@@ -43,7 +43,15 @@ jobs:
             const testResultsPath = path.join(process.env.GITHUB_WORKSPACE, 'jest-results.json');
             const testResultsData = fs.readFileSync(testResultsPath, 'utf8');
             const testResults = JSON.parse(testResultsData); // Now testResults is a JavaScript object
-            const commentBody = `## Jest Test Results\n###Failed test suites:\n${testResults.numFailedTestSuites}\n###Failed tests:\n${testResults.numFailedTests}\n`###Passed test suites:\n${testResults.numPassedTestSuites}\n###Passed tests:\n${testResults.numPassedTests}\n`;
+            const commentBody = `## Jest Test Results
+            ### Failed test suites:
+            ${testResults.numFailedTestSuites}
+            ### Failed tests:
+            ${testResults.numFailedTests}
+            ### Passed test suites:
+            ${testResults.numPassedTestSuites}
+            ### Passed tests:
+            ${testResults.numPassedTests}`;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
