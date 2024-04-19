@@ -41,4 +41,4 @@ jobs:
         run: |
           VERSION=${{ steps.package_version.outputs.VERSION }}
           git tag -a "v$VERSION" -m "Release v$VERSION"
-          git push https://${{ secrets.MY_PERSONAL_TOKEN }}@github.com/${{ github.repository }} "v$VERSION"
+          git push https://${{ secrets.RELEASE_NOTE_TOKEN }}@github.com/${{ github.repository }} "v$VERSION"
