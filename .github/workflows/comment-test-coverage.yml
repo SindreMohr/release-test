@@ -21,7 +21,7 @@ jobs:
         run: yarn install
 
       - name: Run tests and capture output
-        run: yarn test > test-results.txt 2>&1 || true
+        run: yarn test
         continue-on-error: true
 
 
