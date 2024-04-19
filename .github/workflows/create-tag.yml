@@ -1,0 +1,41 @@
+name: Tag Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - 'release/*'
+
+jobs:
+  tag-version:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Extract version from package.json
+        id: package_version
+        run: |
+          echo "Extracting version from package.json"
+          VERSION=$(node -p "require('./package.json').version")
+          echo "::set-output name=VERSION::$VERSION"
+          echo "Version: $VERSION"
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Create Git tag
+        run: |
+          VERSION=${{ steps.package_version.outputs.VERSION }}
+          git tag -a "v$VERSION" -m "Release v$VERSION"
+          git push origin "v$VERSION"
