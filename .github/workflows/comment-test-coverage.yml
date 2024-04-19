@@ -21,7 +21,9 @@ jobs:
         run: yarn install
 
       - name: Run tests and capture output
-        run: yarn test
+        run: yarn test > test-results.txt 2>&1 || true
+        continue-on-error: true
+
 
       - name: Read test results
         id: test_results
