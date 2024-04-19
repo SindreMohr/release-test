@@ -43,6 +43,7 @@ jobs:
             const testResultsPath = path.join(process.env.GITHUB_WORKSPACE, 'jest-results.json');
             const testResultsData = fs.readFileSync(testResultsPath, 'utf8');
             const testResults = JSON.parse(testResultsData); // Now testResults is a JavaScript object
+            const percentagePassed = `${testResultsData.numPassedTest / testResultsData.numTotalTests}%`
             const commentBody = `## Jest Test Results
             Result: ${testResults.success ? ':green_circle:' : ':red_circle:'}
             ### Test suites:
@@ -50,7 +51,8 @@ jobs:
             Passed: ${testResults.numPassedTestSuites}
             ### Tests:
             Failed: ${testResults.numFailedTests}
-            Passed: ${testResults.numPassedTests}`;
+            Passed: ${testResults.numPassedTests}
+            Percentage: ${percentagePassed}`;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
