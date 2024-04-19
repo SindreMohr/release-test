@@ -44,7 +44,7 @@ jobs:
             const testResultsData = fs.readFileSync(testResultsPath, 'utf8');
             const testResults = JSON.parse(testResultsData); // Now testResults is a JavaScript object
             const commentBody = `## Jest Test Results
-            Result: ${testResults.success ? '<span style="color:green">*SUCCESS*</span>' : '<span style="color:red">*FAILED*</span>'}
+            Result: ${testResults.success ? '$${\color{green}PASSED' : '$${\color{red}FAILED'}
             ### Test suites:
             Failed: ${testResults.numFailedTestSuites}
             Passed: ${testResults.numPassedTestSuites}
