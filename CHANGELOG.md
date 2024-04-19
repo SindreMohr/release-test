@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/SindreMohr/release-test/compare/v1.0.0...v1.1.0) (2024-04-19)
+
+
+### Features
+
+* Changelog maker ([7c39dbe](https://github.com/SindreMohr/release-test/commit/7c39dbe10c8b899cb50be991b658356759c74297))
+
 ## 1.0.0 (2024-04-19)
 
 
