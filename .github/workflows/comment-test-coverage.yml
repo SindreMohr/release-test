@@ -30,7 +30,7 @@ jobs:
         with:
           name: jest-results
           path: |
-            coverage/
+            ./coverage/
             jest-results.json
 
       - name: Comment on PR with test results
