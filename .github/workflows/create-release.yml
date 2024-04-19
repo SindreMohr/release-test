@@ -1,0 +1,57 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get latest merged PR description
+        id: latest_pr
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: pullRequests } = await github.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed',
+              base: 'main', // or 'master' or your default branch
+              sort: 'updated',
+              direction: 'desc'
+            });
+            const mergedPRs = pullRequests.filter(pr => pr.merged_at !== null);
+            if (mergedPRs.length === 0) {
+              core.setFailed('No merged PRs found.');
+              return;
+            }
+            const latestPR = mergedPRs[0];
+            return {
+              body: latestPR.body,
+              number: latestPR.number
+            };
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }}
+          body: |
+            Release based on tag ${{ github.ref_name }}.
+
+            Description from PR #${{ steps.latest_pr.outputs.number }}:
+            ${{ steps.latest_pr.outputs.body }}
+          draft: false
+          prerelease: false
