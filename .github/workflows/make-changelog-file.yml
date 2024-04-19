@@ -1,0 +1,26 @@
+name: PR Description to Markdown
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-markdown:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+    
+    - name: Append PR description to markdown file
+      run: |
+        echo -e "## PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}\n\n${{ github.event.pull_request.body }}\n" >> PR_DESCRIPTIONS.md
+        git config --global user.email "action@github.com"
+        git config --global user.name "GitHub Action"
+        git add PR_DESCRIPTIONS.md
+        git commit -m "Update PR_DESCRIPTIONS.md for PR #${{ github.event.pull_request.number }}"
+        git push
