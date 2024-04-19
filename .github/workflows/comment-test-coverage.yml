@@ -24,22 +24,20 @@ jobs:
         run: yarn test
         continue-on-error: true
 
-      - name: Capture test results
+      - name: Upload Jest results
         if: always()
         uses: actions/upload-artifact@v2
         with:
           name: jest-results
-          path: |
-            ./coverage/
-            jest-results.json
-
+          path: jest-results.json
+          
       - name: Comment on PR with test results
         if: always() && github.event_name == 'pull_request'
         uses: actions/github-script@v5
         with:
           script: |
             const fs = require('fs');
-            const testResults = fs.readFileSync('jest-results.json', 'utf8');
+            const testResults = fs.readFileSync('${{ github.workspace }}/jest-results.json', 'utf8');
             const pullRequestNumber = github.event.pull_request.number;
             const commentBody = `## Jest Test Results\n\`\`\`\n${testResults}\n\`\`\``;
             await github.rest.issues.createComment({

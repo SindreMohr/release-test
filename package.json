@@ -8,7 +8,7 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "jest"
+    "test": "jest --json --outputFile=jest-results.json"
   },
   "dependencies": {
     "@astrojs/check": "^0.5.8",
