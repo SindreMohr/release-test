@@ -21,13 +21,19 @@ jobs:
         run: yarn install
 
       - name: Run tests and capture output
-        run: yarn test
+        run: yarn test > test-results.txt 2>&1 || echo "Tests failed"
         continue-on-error: true
 
 
       - name: Read test results
         id: test_results
-        run: echo "::set-output name=data::$(cat test-results.txt)"
+        run: |
+          if [ -s test-results.txt ]; then
+            echo "::set-output name=data::$(<test-results.txt)"
+          else
+            echo "No test results were found."
+            echo "::set-output name=data::No test results were found."
+          fi
 
       - uses: actions/github-script@v6
         with:
