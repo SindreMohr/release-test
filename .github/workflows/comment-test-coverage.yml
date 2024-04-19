@@ -44,14 +44,13 @@ jobs:
             const testResultsData = fs.readFileSync(testResultsPath, 'utf8');
             const testResults = JSON.parse(testResultsData); // Now testResults is a JavaScript object
             const commentBody = `## Jest Test Results
-            ### Failed test suites:
-            ${testResults.numFailedTestSuites}
-            ### Failed tests:
-            ${testResults.numFailedTests}
-            ### Passed test suites:
-            ${testResults.numPassedTestSuites}
-            ### Passed tests:
-            ${testResults.numPassedTests}`;
+            Result: ${testResults.success ? "<span style="color:green">*SUCCESS*</span>" : "<span style="color:red">*FAILED*</span>"}
+            ### Test suites:
+            Failed: ${testResults.numFailedTestSuites}
+            Passed: ${testResults.numPassedTestSuites}
+            ### Tests:
+            Failed: ${testResults.numFailedTests}
+            Passed: ${testResults.numPassedTests}`;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
