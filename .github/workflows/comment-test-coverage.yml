@@ -38,7 +38,7 @@ jobs:
           script: |
             const fs = require('fs');
             const testResults = fs.readFileSync('${{ github.workspace }}/jest-results.json', 'utf8');
-            const commentBody = `## Jest Test Results\n\`\`\`\n${testResults}\n\`\`\``;
+            const commentBody = `## Jest Test Results\n###Failed test suites:\n${testResults.numFailedTestSuites}\n###Failed tests:\n${testResults.numFailedTests}\n`###Passed test suites:\n${testResults.numPassedTestSuites}\n###Passed tests:\n${testResults.numPassedTests}\n`;
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
