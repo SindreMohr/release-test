@@ -43,7 +43,7 @@ jobs:
             const testResultsPath = path.join(process.env.GITHUB_WORKSPACE, 'jest-results.json');
             const testResultsData = fs.readFileSync(testResultsPath, 'utf8');
             const testResults = JSON.parse(testResultsData); // Now testResults is a JavaScript object
-            const percentagePassed = `${testResults.numPassedTests / testResults.numTotalTests}%`
+            const percentagePassed = `${(testResults.numPassedTests / testResults.numTotalTests)*100}%`
             const commentBody = `## Jest Test Results
             Result: ${testResults.success ? '✅ **SUCCESS**' : '❌ **FAILED**'}
             ### Test suites:
