@@ -7,11 +7,15 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "jest"
   },
   "dependencies": {
-    "astro": "^4.5.2",
     "@astrojs/check": "^0.5.8",
+    "astro": "^4.5.2",
     "typescript": "^5.4.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
