@@ -20,29 +20,31 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Run tests and capture output
-        run: yarn test > "${{ github.workspace }}/test-results.txt" 2>&1 || true
+      - name: Run Jest tests
+        run: yarn test
         continue-on-error: true
 
-      - name: Read test results
-        id: test_results
-        run: |
-          TEST_RESULTS_PATH="${{ github.workspace }}/test-results.txt"
-          if [ -s "$TEST_RESULTS_PATH" ]; then
-            TEST_RESULTS=$(cat "$TEST_RESULTS_PATH")
-            echo "::set-output name=data::$TEST_RESULTS"
-          else
-            echo "::set-output name=data::No test results were found."
-          fi
-
-      - uses: actions/github-script@v6
+      - name: Capture test results
+        if: always()
+        uses: actions/upload-artifact@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          name: jest-results
+          path: |
+            coverage/
+            jest-results.json
+
+      - name: Comment on PR with test results
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v5
+        with:
           script: |
-            const comment_body = `Test results:\n\`\`\`\n${{ steps.test_results.outputs.data }}\n\`\`\``;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
+            const fs = require('fs');
+            const testResults = fs.readFileSync('jest-results.json', 'utf8');
+            const pullRequestNumber = github.event.pull_request.number;
+            const commentBody = `## Jest Test Results\n\`\`\`\n${testResults}\n\`\`\``;
+            await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: comment_body
-            })
+              issue_number: pullRequestNumber,
+              body: commentBody
+            });
