@@ -21,17 +21,17 @@ jobs:
         run: yarn install
 
       - name: Run tests and capture output
-        run: yarn test > test-results.txt 2>&1 || echo "Tests failed"
+        run: yarn test > "${{ github.workspace }}/test-results.txt" 2>&1 || true
         continue-on-error: true
-
 
       - name: Read test results
         id: test_results
         run: |
-          if [ -s test-results.txt ]; then
-            echo "::set-output name=data::$(<test-results.txt)"
+          TEST_RESULTS_PATH="${{ github.workspace }}/test-results.txt"
+          if [ -s "$TEST_RESULTS_PATH" ]; then
+            TEST_RESULTS=$(cat "$TEST_RESULTS_PATH")
+            echo "::set-output name=data::$TEST_RESULTS"
           else
-            echo "No test results were found."
             echo "::set-output name=data::No test results were found."
           fi
 
