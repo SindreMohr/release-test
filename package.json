@@ -1,17 +1,25 @@
 {
   "name": "tasty-trappist",
   "type": "module",
-  "version": "1.4.2",
+  "version": "1.5.0",
+  "jest": {
+    "collectCoverage": true,
+    "coverageReporters": ["json", "html"]
+  },
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "jest --json --outputFile=jest-results.json"
   },
   "dependencies": {
-    "astro": "^4.5.2",
     "@astrojs/check": "^0.5.8",
+    "astro": "^4.5.2",
     "typescript": "^5.4.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }

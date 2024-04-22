@@ -14,12 +14,48 @@ jobs:
     name: Comment tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@v6
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run Jest tests
+        run: yarn test
+        continue-on-error: true
+
+      - name: Upload Jest results
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: jest-results
+          path: jest-results.json
+
+      - name: Comment on PR with test results
+        if: always()
+        uses: actions/github-script@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
+            const fs = require('fs');
+            const path = require('path');
+            const testResultsPath = path.join(process.env.GITHUB_WORKSPACE, 'jest-results.json');
+            const testResultsData = fs.readFileSync(testResultsPath, 'utf8');
+            const testResults = JSON.parse(testResultsData); // Now testResults is a JavaScript object
+            const percentagePassed = `${(testResults.numPassedTests / testResults.numTotalTests)*100}%`
+            const commentBody = `## Jest Test Results
+            Result: ${testResults.success ? '✅ **SUCCESS**' : '❌ **FAILED**'}
+            ### Test suites:
+            Failed: ${testResults.numFailedTestSuites}
+            Passed: ${testResults.numPassedTestSuites}
+            ### Tests:
+            Failed: ${testResults.numFailedTests}
+            Passed: ${testResults.numPassedTests}
+            Percentage: ${percentagePassed}`;
+            await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Thanks for reporting!'
-            })
+              issue_number: context.issue.number,
+              body: commentBody
+            });
