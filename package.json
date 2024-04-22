@@ -1,7 +1,11 @@
 {
   "name": "tasty-trappist",
   "type": "module",
-  "version": "1.4.2",
+  "version": "1.5.0",
+  "jest": {
+    "collectCoverage": true,
+    "coverageReporters": ["json", "html"]
+  },
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
